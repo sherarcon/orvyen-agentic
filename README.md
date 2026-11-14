@@ -16,14 +16,14 @@
 [![OWASP LLM Top 10](https://img.shields.io/badge/OWASP-LLM_Top_10-orange)](https://owasp.org/www-project-top-10-for-large-language-model-applications/)
 [![IMDA Governance](https://img.shields.io/badge/Singapore-IMDA_Agentic_AI_(May_2026)-green)](https://www.imda.gov.sg/)
 
-**Orvyen Agentic** is a pre-deployment static analysis security and compliance scanner purpose-built for modern AI agent architectures. While 76% of existing AI security solutions operate at runtime or rely on heuristic prompts, Orvyen Agentic evaluates vulnerable agent patterns before deployment by scanning orchestration logic, tools, prompts, and MCP manifests for governance and security risks.
+**Orvyen Agentic** is a pre-deployment static analysis security and compliance scanner purpose-built for modern AI agent architectures. While 76% of existing AI security solutions operate at runtime (inspecting prompts downstream after deployment), Orvyen Agentic operates **pre-deployment in CI/CD and local development** — finding security flaws in agent code, prompt templates, tool privileges, and MCP server manifests before code ever merges.
 
 ---
 
 ## Key Features
 
 - **Agent-Aware AST Parsing**: Deep inspection of Python agent graphs and orchestrations across **LangChain**, **LangGraph**, and **CrewAI**.
-- **Model Context Protocol (MCP) Scanning**: Static inspection of `claude_desktop_config.json` and `mcp.json` server configurations, detecting shell capabilities, plaintext credentials, and orphaned tool chains.
+- **Model Context Protocol (MCP) Scanning**: Static inspection of `claude_desktop_config.json` and `mcp.json` server configurations, detecting shell capabilities, plaintext credentials, and orphaned gateways.
 - **Sub-100ms Performance**: Zero external runtime dependencies; executes blazing-fast static checks in milliseconds using Python's standard library.
 - **Agent Bill of Materials (AIBOM)**: Auto-compiles an auditable inventory of every tool, privilege tier, model, and external data flow.
 - **Regulatory & Governance Scorecards**:
@@ -34,7 +34,7 @@
 
 ---
 
-## The 12-Rule Security & Governance Pack
+## The Initial 8-Rule Security Pack
 
 | Rule ID | Rule Name | Severity | OWASP Mapping | Singapore IMDA Pillar |
 | :--- | :--- | :--- | :--- | :--- |
@@ -46,10 +46,6 @@
 | **`OAG-006`** | **Orphaned Tools & MCPs** | `MEDIUM` / `LOW` | LLM06: Excessive Agency | Pillar 2: Human Accountability |
 | **`OAG-007`** | **Missing Rate / Step Limits**| `MEDIUM` | LLM10: Unbounded Consumption| Pillar 3: Technical Controls |
 | **`OAG-008`** | **Unaudited State Mutations** | `HIGH` | LLM06: Excessive Agency | Pillar 2: Human Accountability |
-| **`OAG-009`** | **Insecure MCP Transport** | `HIGH` | LLM09: Insecure Plugin Design | Pillar 3: Technical Controls |
-| **`OAG-010`** | **Missing Human-in-the-Loop** | `CRITICAL` / `HIGH` | LLM06: Excessive Agency | Pillar 2: Human Accountability |
-| **`OAG-011`** | **Excessive Tool Chaining** | `MEDIUM` | LLM06: Excessive Agency | Pillar 1: Assess & Bound Risk |
-| **`OAG-012`** | **Sensitive Data Exfiltration** | `CRITICAL` | LLM02: Sensitive Information | Pillar 3: Technical Controls |
 
 ---
 
@@ -101,12 +97,6 @@ python -m orvyen.cli scan ./my-agent-repo
 ```bash
 # Generate Terminal, JSON, and HTML reports simultaneously
 orvyen-agentic scan ./my-agent-repo --format all --output-dir ./scan_results
-
-# Export SARIF 2.1.0 report for GitHub Advanced Security / Code Scanning integration
-orvyen-agentic scan ./my-agent-repo --format sarif --output-dir ./scan_results
-
-# Export audit-ready PDF compliance report (requires Pro license)
-orvyen-agentic scan ./my-agent-repo --format pdf --license-key YOUR_KEY --output-dir ./scan_results
 
 # Compact view: single-line output (ideal for fast developer loops & IDE terminals)
 orvyen-agentic scan ./my-agent-repo --compact
@@ -212,7 +202,7 @@ jobs:
                                     ▼
        ┌─────────────────────────────────────────────────────────┐
        │                       Rule Engine                       │
-       │  • Evaluates OAG-001 to OAG-012 across intermediate IR  │
+       │  • Evaluates OAG-001 to OAG-008 across intermediate IR  │
        │  • Categorizes findings by severity & framework         │
        └────────────────────────────┬────────────────────────────┘
                                     │
@@ -240,4 +230,3 @@ python -m unittest discover -s tests -p "test_*.py" -v
 
 Developed by **Orvyen**.  
 Licensed under the Apache-2.0 License.
-
