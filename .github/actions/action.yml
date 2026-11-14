@@ -20,7 +20,7 @@ inputs:
     required: false
     default: 'HIGH'
   format:
-    description: 'Output report format: terminal, json, html, aibom, or all'
+    description: 'Output report format: terminal, json, html, aibom, sarif, pdf, or all'
     required: false
     default: 'json'
   output-dir:
@@ -56,7 +56,7 @@ runs:
       shell: bash
       run: |
         pipx run orvyen-agentic --version 2>/dev/null || \
-        pip install --quiet orvyen-agentic==0.2.0
+        pip install --quiet orvyen-agentic==0.3.1
 
     - name: Run Orvyen Agentic Scan
       id: scan
